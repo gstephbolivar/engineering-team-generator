@@ -15,22 +15,40 @@ const render = require("./lib/htmlRenderer");
 
 const employees = [];
 
-function newTeamMember() {
+function createTeam() {
   inquirer
     .prompt([
       {
-        type: "list",
-        name: "newAddition",
-        message: "Would you like to add a new team member?",
-        choices: ["yes", "no"],
+        type: "input",
+        name: "managerName",
+        message: "What is your name?",
+      },
+      {
+        type: "input",
+        name: "managerID",
+        message: "What is your ID number?",
+      },
+      {
+        type: "input",
+        name: "managerEmail",
+        message: "What is your e-mail address?",
+      },
+      {
+        type: "input",
+        name: "officeNumber",
+        message: "What is your office number?",
       },
     ])
     .then((userInput) => {
-      if (userInput.newAddition === "yes") {
-        createTeamMember();
-      } else {
-        console.log(employees);
-      }
+      employees.push(
+        new Manager(
+            userInput.managerName,
+            userInput.managerID,
+            userInput.managerEmail,
+            userInput.officeNumber
+        )
+      );
+      createTeamMember();
     });
 }
 
@@ -41,28 +59,30 @@ function createTeamMember() {
         type: "list",
         name: "position",
         message: "What position does this team member hold?",
-        choices: ["Engineer", "Intern", "Manager"],
-
+        choices: ["Engineer", "Intern", "No employee to add."],
       },
       {
         type: "input",
         name: "teamMemberName",
         message: "What is your team members name?",
+        when:(userInput) => userInput.position !== "No employee to add.",
       },
       {
         type: "input",
         name: "teamMemberID",
         message: "What is your team members ID number?",
+        when: (userInput) => userInput.position !== "No employee to add.",
       },
       {
         type: "input",
         name: "teamMemberEmail",
         message: "What is your team members e-mail?",
+        when: (userInput) => userInput.position !== "No employee to add.",
       },
       {
         type: "input",
         name: "engineerGithub",
-        message: "What is the Engineer's Github?",
+        message: "What is the Engineer's Github user account?",
         when: (userInput) => userInput.position === "Engineer",
       },
       {
@@ -71,46 +91,35 @@ function createTeamMember() {
         message: "What school does your intern attend?",
         when: (userInput) => userInput.position === "Intern",
       },
-      {
-        type: "input",
-        name: "officeNumber",
-        message: "What is the office number?",
-        when: (userInput) => userInput.position === "Manager",
-      },
     ])
     .then((userInput) => {
       if (userInput.position === "Engineer") {
-        const engineer = new Engineer(
-          userInput.teamMemberName,
-          userInput.teamMemberID,
-          userInput.teamMemberEmail,
-          userInput.engineerGithub
-        );
-        employees.push(engineer);
-      } else if (userInput.position === "Intern") {
-        const intern = new Intern(
-          userInput.teamMemberName,
-          userInput.teamMemberID,
-          userInput.teamMemberEmail,
-          userInput.internSchool
-        );
-        employees.push(intern);
-      } else {
-          const manager = new Manager(
+        employees.push(
+          new Engineer(
             userInput.teamMemberName,
             userInput.teamMemberID,
             userInput.teamMemberEmail,
-            userInput.officeNumber
-          );
-          employees.push(manager);
+            userInput.engineerGithub
+          )
+        );
+        createTeamMember();
+      } else if (userInput.position === "Intern") {
+        employees.push(
+          new Intern(
+            userInput.teamMemberName,
+            userInput.teamMemberID,
+            userInput.teamMemberEmail,
+            userInput.internSchool
+          )
+        );
+        createTeamMember();
+      } else {
+        console.log("You're done!");
       }
-      
-      newTeamMember();
     });
 }
 
-newTeamMember();
-
+createTeam();
 
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
