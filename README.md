@@ -42,7 +42,7 @@ A user can contribute by creating more styling to the html documents to allow th
 ## Test
 
 [YouTubeDemo](https://www.youtube.com/watch?v=Dwb10482duM&feature=youtu.be)
-![TeamHomePage](./images/team-homepage.png)
+![TeamHomePage](./images/team-homepage2.png)
 
 ## Credits
 
