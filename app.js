@@ -22,30 +22,60 @@ function createTeam() {
         type: "input",
         name: "managerName",
         message: "What is your name?",
+        validate: (userInput) => {
+          if (userInput != "") {
+            return true;
+          }
+          return "Please enter your name.";
+        },
       },
       {
         type: "input",
         name: "managerID",
         message: "What is your ID number?",
+        validate: (userInput) => {
+          const number = userInput.match(/^[1-9]|\d*s/);
+          //   console.log(number[0]);
+          //   console.log(number);
+          if (number !== null) {
+            return true;
+          }
+          return "Please enter your ID number.";
+        },
       },
       {
         type: "input",
         name: "managerEmail",
         message: "What is your e-mail address?",
+        validate: (userInput) => {
+          if (userInput != "") {
+            return true;
+          }
+          return "Please enter your e-mail.";
+        },
       },
       {
         type: "input",
         name: "officeNumber",
         message: "What is your office number?",
+        validate: (userInput) => {
+          const number = userInput.match(/^[1-9]|\d*s/);
+          //   console.log(number[0]);
+          //   console.log(number);
+          if (number !== null) {
+            return true;
+          }
+          return "Please enter your office number.";
+        },
       },
     ])
     .then((userInput) => {
       employees.push(
         new Manager(
-            userInput.managerName,
-            userInput.managerID,
-            userInput.managerEmail,
-            userInput.officeNumber
+          userInput.managerName,
+          userInput.managerID,
+          userInput.managerEmail,
+          userInput.officeNumber
         )
       );
       createTeamMember();
@@ -59,37 +89,70 @@ function createTeamMember() {
         type: "list",
         name: "position",
         message: "What position does this team member hold?",
-        choices: ["Engineer", "Intern", "No employee to add."],
+        choices: ["Engineer", "Intern", "No team member to add."],
       },
       {
         type: "input",
         name: "teamMemberName",
         message: "What is your team members name?",
-        when:(userInput) => userInput.position !== "No employee to add.",
+        when: (userInput) => userInput.position !== "No team member to add.",
+        validate: (userInput) => {
+          if (userInput != "") {
+            return true;
+          }
+          return "Please enter your  team members name.";
+        },
       },
       {
         type: "input",
         name: "teamMemberID",
         message: "What is your team members ID number?",
-        when: (userInput) => userInput.position !== "No employee to add.",
+        when: (userInput) => userInput.position !== "No team member to add.",
+        validate: (userInput) => {
+          const number = userInput.match(/^[1-9]|\d*s/);
+          //   console.log(number[0]);
+          //   console.log(number);
+          if (number !== null) {
+            return true;
+          }
+          return "Please enter your ID number.";
+        },
       },
       {
         type: "input",
         name: "teamMemberEmail",
         message: "What is your team members e-mail?",
-        when: (userInput) => userInput.position !== "No employee to add.",
+        when: (userInput) => userInput.position !== "No team member to add.",
+        validate: (userInput) => {
+          if (userInput != "") {
+            return true;
+          }
+          return "Please enter your team members e-mail.";
+        },
       },
       {
         type: "input",
         name: "engineerGithub",
-        message: "What is the Engineer's Github user account?",
+        message: "What is the Engineer's Github username? No @ needed.",
         when: (userInput) => userInput.position === "Engineer",
+        validate: (userInput) => {
+          if (userInput != "") {
+            return true;
+          }
+          return "Please enter your engineers github username.";
+        },
       },
       {
         type: "input",
         name: "internSchool",
         message: "What school does your intern attend?",
         when: (userInput) => userInput.position === "Intern",
+        validate: (userInput) => {
+          if (userInput != "") {
+            return true;
+          }
+          return "Please enter your interns school.";
+        },
       },
     ])
     .then((userInput) => {
@@ -114,22 +177,22 @@ function createTeamMember() {
         );
         createTeamMember();
       } else {
-          createHTML(employees);
+        createHTML(employees);
         console.log("You're done!");
       }
     });
 }
 
 const createHTML = (userInput) => {
-    if (!fs.existsSync(OUTPUT_DIR)) {
-        fs.mkdirSync(OUTPUT_DIR, (err) =>{
-            if (err) throw err;
-        });
-    }
-    fs.writeFileSync(outputPath, render(userInput), (err) => {
-        if (err) throw err;
+  if (!fs.existsSync(OUTPUT_DIR)) {
+    fs.mkdirSync(OUTPUT_DIR, (err) => {
+      if (err) throw err;
     });
-    console.log("You're team has been created!");
+  }
+  fs.writeFileSync(outputPath, render(userInput), (err) => {
+    if (err) throw err;
+  });
+  console.log("You're team has been created!");
 };
 
 createTeam();
@@ -143,7 +206,6 @@ createTeam();
 // `output` folder. You can use the variable `outputPath` above target this location.
 // Hint: you may need to check if the `output` folder exists and create it if it
 // does not.
-
 
 // HINT: each employee type (manager, engineer, or intern) has slightly different
 // information; write your code to ask different questions via inquirer depending on
